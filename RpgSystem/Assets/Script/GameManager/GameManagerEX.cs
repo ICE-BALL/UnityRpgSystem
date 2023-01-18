@@ -16,6 +16,10 @@ public class GameManagerEX : MonoBehaviour
 
     private void Awake()
     {
+        if (_Root == null)
+            _Root = new GameObject() { name = "@Root" };
+        DontDestroyOnLoad(gameObject);
+        DontDestroyOnLoad(_Root);
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player == null)
             Resource.Instantiate("Game/unitychan");

@@ -9,7 +9,7 @@ public class PlayerController : BaseController
     #region º¯¼ö
     [SerializeField]
     GameObject _camera;
-    Stat _stat;
+    PlayerStat _stat;
     public float _speed;
     Vector3[] _dirs = new Vector3[4];
     bool _attacking = false;
@@ -24,7 +24,7 @@ public class PlayerController : BaseController
     {
         if (_camera == null)
             _camera = Camera.main.transform.parent.gameObject;
-        _stat = GetComponent<Stat>();
+        _stat = GetComponent<PlayerStat>();
         _speed = _stat.MoveSpeed;
         _mask = LayerMask.GetMask("Monster");
     }
@@ -33,6 +33,7 @@ public class PlayerController : BaseController
     {
         GameUpdate();
         StateUpdate();
+        _stat.Leveling();
     }
 
     #region Animation Event

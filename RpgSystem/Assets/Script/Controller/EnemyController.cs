@@ -10,6 +10,7 @@ public class EnemyController : BaseController
     NavMeshAgent _nav;
     Stat _stat;
     LayerMask _mask;
+    define.MonsterType _type;
 
     float _scanRange = 10f;
     float _attackRange = 2f;
@@ -18,10 +19,21 @@ public class EnemyController : BaseController
 
     void Start()
     {
-        _stat = GetComponent<Stat>();
+        string tag = gameObject.tag;
+        switch (tag)
+        {
+            case "Skeleton":
+                _type = define.MonsterType.Skeleton;
+                _stat = GetComponent<SkeletonStat>();
+                break;
+        }
+        
         _player = GameObject.FindGameObjectWithTag("Player");
         _nav = GetComponent<NavMeshAgent>();
         _mask = LayerMask.GetMask("Player");
+
+        _player.GetComponent<PlayerStat>()._levelUp -= SetMonsterLevel;
+        _player.GetComponent<PlayerStat>()._levelUp += SetMonsterLevel;
     }
 
     private void Update()
@@ -44,16 +56,30 @@ public class EnemyController : BaseController
         }
     }
 
+    public void SetMonsterLevel()
+    {
+        if (_stat.Hp <= 0) 
+            return;
+        switch (_type)
+        {
+            case define.MonsterType.Skeleton:
+                GetComponent<SkeletonStat>().SetSkeletonLevel(_player.GetComponent<Stat>().Level);
+                break;
+        }
+    }
+
     #region Animation Event
     void OnHitEvent()
     {
-        
         _state = State.Idle;
         _attacking = false;
     }
 
     void OnDieEvent()
     {
+        PlayerStat stat = _player.GetComponent<PlayerStat>();
+        stat.Exp += SetMonsterExp();
+        
         Resource.Destroy(gameObject);
     }
 
@@ -99,6 +125,7 @@ public class EnemyController : BaseController
 
     void FindTarget()
     {
+        _nav.speed = _stat.MoveSpeed;
         _nav.destination = _player.transform.position;
     }
     #endregion
@@ -128,4 +155,23 @@ public class EnemyController : BaseController
         anim.Play("DAMAGED01");
     }
     #endregion
+
+    int SetMonsterExp()
+    {
+        int exp = 0;
+        switch (_type)
+        {
+            case define.MonsterType.Skeleton:
+                exp = ExpSkeleton();
+                break;
+        }
+
+        return exp;
+    }
+
+    int ExpSkeleton()
+    {
+        PlayerStat stat = _player.GetComponent<PlayerStat>();
+        return _stat.Level + _stat.MaxHp / 10 + _stat.Attack;
+    }
 }
