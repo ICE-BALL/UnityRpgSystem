@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using System;
+using Unity.VisualScripting;
 
 public class EnemyController : BaseController
 {
@@ -12,9 +14,18 @@ public class EnemyController : BaseController
     LayerMask _mask;
     define.MonsterType _type;
 
+    System.Random _r = new System.Random();
+
     float _scanRange = 10f;
     float _attackRange = 2f;
     bool _attacking = false;
+    bool _targeting = false;
+
+    float _timer = 0;
+    int _waitTime = 0;
+    float _walkTime = 0;
+    int _way = 0;
+    float _walkTimer = 0;
     
 
     void Start()
@@ -31,6 +42,7 @@ public class EnemyController : BaseController
         _player = GameObject.FindGameObjectWithTag("Player");
         _nav = GetComponent<NavMeshAgent>();
         _mask = LayerMask.GetMask("Player");
+        _nav.speed = _stat.MoveSpeed;
 
         _player.GetComponent<PlayerStat>()._levelUp -= SetMonsterLevel;
         _player.GetComponent<PlayerStat>()._levelUp += SetMonsterLevel;
@@ -38,6 +50,12 @@ public class EnemyController : BaseController
 
     private void Update()
     {
+        if (!_targeting)
+        {
+            _timer += Time.deltaTime;
+            _walkTimer += Time.deltaTime;
+        }
+        
         Targetting();
         switch (_state)
         {
@@ -104,6 +122,53 @@ public class EnemyController : BaseController
             _state = State.Die;
             return;
         }
+
+        if (!_targeting)
+        {
+            if (_waitTime == 0)
+                _waitTime = _r.Next(2, 4);
+            if (_walkTime == 0)
+                _walkTime = _r.Next(3, 6);
+
+            if (_timer >= _waitTime)
+            {
+                if (_way == 0)
+                    _way = _r.Next(1, 5);
+
+                _state = State.Run;
+                switch (_way)
+                {
+                    case 1:
+                        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Vector3.forward), 0.5f);
+                        transform.position += Vector3.forward * _stat.MoveSpeed * Time.deltaTime;
+                        break;
+                    case 2:
+                        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Vector3.back), 0.5f);
+                        transform.position += Vector3.back * _stat.MoveSpeed * Time.deltaTime;
+                        break;
+                    case 3:
+                        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Vector3.left), 0.5f);
+                        transform.position += Vector3.left * _stat.MoveSpeed * Time.deltaTime;
+                        break;
+                    case 4:
+                        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Vector3.right), 0.5f);
+                        transform.position += Vector3.right * _stat.MoveSpeed * Time.deltaTime;
+                        break;
+                }
+
+                if (_walkTimer >= _walkTime)
+                {
+                    _timer = 0;
+                    _waitTime = 0;
+                    _walkTime = 0;
+                    _way = 0;
+                    _walkTimer = 0;
+                }
+            }
+            else
+                _state = State.Idle;
+        }
+
         float distance = (_player.transform.position - transform.position).magnitude;
 
         if (distance <= _attackRange && _attacking == false)
@@ -114,20 +179,23 @@ public class EnemyController : BaseController
             return;
         }
 
-        if (distance <= _scanRange && distance >= _attackRange)
+        if (distance <= _scanRange) //  && distance >= _attackRange
         {
+            _targeting = true;
             _state = State.Run;
             FindTarget();
         }
         else
-            _state = State.Idle;
+        {
+            _targeting = false;
+        }
     }
 
     void FindTarget()
     {
-        _nav.speed = _stat.MoveSpeed;
         _nav.destination = _player.transform.position;
     }
+
     #endregion
 
     #region State Functions
@@ -145,6 +213,7 @@ public class EnemyController : BaseController
 
     void Attack()
     {
+        transform.LookAt(_player.transform);
         Animator anim = GetComponent<Animator>();
         anim.SetTrigger("Attack");
     }
