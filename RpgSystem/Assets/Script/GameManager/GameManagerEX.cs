@@ -48,6 +48,7 @@ public class GameManagerEX : MonoBehaviour
                 GameObject monster = Resource.Instantiate("Game/SKELETON");
                 monster.transform.position = vec;
                 monster.transform.SetParent(_Root.transform);
+                define.MonsterList.Add(monster);
                 _monsterCount += 1;
             }
             _timer = 0.5f;

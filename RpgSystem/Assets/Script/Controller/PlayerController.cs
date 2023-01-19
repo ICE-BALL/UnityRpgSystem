@@ -13,6 +13,7 @@ public class PlayerController : BaseController
     public float _speed;
     Vector3[] _dirs = new Vector3[4];
     bool _attacking = false;
+    float _attackRange = 2f;
 
     State _state = State.Idle;
 
@@ -53,7 +54,7 @@ public class PlayerController : BaseController
         Vector3 dis = transform.localRotation * Vector3.forward;
         RaycastHit hit;
 
-        if (Physics.Raycast((transform.position + Vector3.up), dis, out hit, 2, _mask))
+        if (Physics.Raycast((transform.position + Vector3.up), dis, out hit, _attackRange, _mask))
         {
             _enemy = hit.transform;
             Stat EnemyStat = _enemy.GetComponent<Stat>();
@@ -67,6 +68,11 @@ public class PlayerController : BaseController
     {
         if (Input.GetMouseButtonDown(0) && _attacking == false)
         {
+            GameObject go = AutoTargeting();
+            if ((go.transform.position - transform.position).magnitude < _attackRange)
+            {
+                transform.LookAt(go.transform.position);
+            }
             _attacking = true;
             _state = State.Attack;
         }
@@ -75,6 +81,23 @@ public class PlayerController : BaseController
             PlayerMove();
         }
 
+    }
+
+    GameObject AutoTargeting()
+    {
+        GameObject T = define.MonsterList[0];
+        Vector3 vc = T.transform.position - transform.position;
+
+        for (int i = 1; i < define.MonsterList.Count; i++)
+        {
+            Vector3 Vc = define.MonsterList[i].transform.position - transform.position;
+            if (Vc.magnitude < vc.magnitude)
+            {
+                T = define.MonsterList[i];
+                vc = Vc;
+            }
+        }
+        return T;
     }
 
     void PlayerMove()

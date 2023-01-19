@@ -19,7 +19,7 @@ public class EnemyController : BaseController
     float _scanRange = 10f;
     float _attackRange = 2f;
     bool _attacking = false;
-    bool _targeting = false;
+    bool _targeting = true;
 
     float _timer = 0;
     int _waitTime = 0;
@@ -120,6 +120,7 @@ public class EnemyController : BaseController
         if (_stat.Hp <= 0)
         {
             _state = State.Die;
+            define.MonsterList.Remove(gameObject);
             return;
         }
 
@@ -181,13 +182,13 @@ public class EnemyController : BaseController
 
         if (distance <= _scanRange) //  && distance >= _attackRange
         {
-            _targeting = true;
+            //_targeting = true;
             _state = State.Run;
             FindTarget();
         }
         else
         {
-            _targeting = false;
+            //_targeting = false;
         }
     }
 
