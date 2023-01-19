@@ -180,15 +180,15 @@ public class EnemyController : BaseController
             return;
         }
 
-        if (distance <= _scanRange) //  && distance >= _attackRange
+        if (distance <= _scanRange)
         {
-            //_targeting = true;
+            _targeting = true;
             _state = State.Run;
             FindTarget();
         }
         else
         {
-            //_targeting = false;
+            _targeting = false;
         }
     }
 

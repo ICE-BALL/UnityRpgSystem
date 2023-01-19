@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Net;
+using TMPro;
 using UnityEngine;
 using static UnityEditor.Experimental.GraphView.GraphView;
 
@@ -11,9 +12,9 @@ public class PlayerController : BaseController
     GameObject _camera;
     PlayerStat _stat;
     public float _speed;
-    Vector3[] _dirs = new Vector3[4];
     bool _attacking = false;
     float _attackRange = 2f;
+    Vector3[] _dirs = new Vector3[4];
 
     State _state = State.Idle;
 
@@ -69,7 +70,7 @@ public class PlayerController : BaseController
         if (Input.GetMouseButtonDown(0) && _attacking == false)
         {
             GameObject go = AutoTargeting();
-            if ((go.transform.position - transform.position).magnitude < _attackRange)
+            if ((go.transform.position - transform.position).magnitude <= _attackRange + 1)
             {
                 transform.LookAt(go.transform.position);
             }
@@ -102,13 +103,13 @@ public class PlayerController : BaseController
 
     void PlayerMove()
     {
-        _dirs[0] = _camera.transform.localRotation * Vector3.forward;
-        _dirs[1] = _camera.transform.localRotation * Vector3.back;
-        _dirs[2] = _camera.transform.localRotation * Vector3.right;
-        _dirs[3] = _camera.transform.localRotation * Vector3.left;
-        
         if (Input.anyKey != false && _attacking == false)
         {
+            _dirs[0] = new Vector3(_camera.transform.forward.x, 0f, _camera.transform.forward.z).normalized;
+            _dirs[1] = new Vector3(-_camera.transform.forward.x, 0f, -_camera.transform.forward.z).normalized;
+            _dirs[2] = new Vector3(_camera.transform.right.x, 0f, _camera.transform.right.z).normalized;
+            _dirs[3] = new Vector3(-_camera.transform.right.x, 0f, -_camera.transform.right.z).normalized;
+
             if (Input.GetKey(KeyCode.W))
             {
                 transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(_dirs[0]), 0.5f);

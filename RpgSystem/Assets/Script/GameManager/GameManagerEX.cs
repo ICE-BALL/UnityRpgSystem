@@ -22,6 +22,9 @@ public class GameManagerEX : MonoBehaviour
             _Root = new GameObject() { name = "@Root" };
         DontDestroyOnLoad(gameObject);
         DontDestroyOnLoad(_Root);
+        GameObject _camera = GameObject.FindGameObjectWithTag("MainCamera");
+        if (_camera == null)
+            Resource.Instantiate("Game/Cam");
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player == null)
             Resource.Instantiate("Game/unitychan");
