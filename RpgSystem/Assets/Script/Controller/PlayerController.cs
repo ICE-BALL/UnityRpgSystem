@@ -67,7 +67,7 @@ public class PlayerController : BaseController
     #region Game
     void GameUpdate()
     {
-        if (Input.GetMouseButtonDown(0) && _attacking == false)
+        if (Input.GetMouseButtonDown(0) && _attacking == false && Cursor.visible == false)
         {
             GameObject go = AutoTargeting();
             if ((go.transform.position - transform.position).magnitude <= _attackRange + 1)

@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using UnityEngine.AI;
+using Unity.VisualScripting;
 
 public class GameManagerEX : MonoBehaviour
 {
     [SerializeField]
     GameObject _Root;
+    [SerializeField]
+    GameObject _UIRoot;
 
     int _maxMonster = 10;
     int _monsterCount = 0;
@@ -18,13 +21,19 @@ public class GameManagerEX : MonoBehaviour
 
     private void Awake()
     {
+        Cursor.visible = false;
         if (_Root == null)
             _Root = new GameObject() { name = "@Root" };
+        Cursor.visible = false;
+        if (_UIRoot == null)
+            _UIRoot = new GameObject() { name = "@UI_Root" };
         DontDestroyOnLoad(gameObject);
+        DontDestroyOnLoad(_UIRoot);
         DontDestroyOnLoad(_Root);
         GameObject _camera = GameObject.FindGameObjectWithTag("MainCamera");
         if (_camera == null)
             Resource.Instantiate("Game/Cam");
+
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player == null)
             Resource.Instantiate("Game/unitychan");
@@ -34,6 +43,10 @@ public class GameManagerEX : MonoBehaviour
     {
         _timer -= Time.deltaTime;
         SpawnMonster();
+        if (Input.GetKey(KeyCode.LeftAlt))
+            Cursor.visible = true;
+        else
+            Cursor.visible = false;
     }
 
     void SpawnMonster()
