@@ -1,9 +1,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using TMPro.Examples;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class UIManager
 {
@@ -26,19 +29,11 @@ public class UIManager
         GetOrAddComponent<T>(go);
     }
 
+    [Obsolete]
     public static void ShowInventoryUI<T>(string name) where T : Component
     {
-        //GameObject go = null;
-        //foreach (GameObject item in _UiList)
-        //{
-        //    if (item.name == name)
-        //        go = item;
-        //}
-        //if (go == null)
-        //    go = Resource.Instantiate($"UI/Inventory/{name}", GameObject.Find("@UI_Root").transform);
-        //go.SetActive(true);
-
         GameObject go = Resource.Instantiate($"UI/Inventory/{name}", GameObject.Find("@UI_Root").transform);
+        LoadInventoryUI(define.InventoryType.WeaponAndArmor, go, define.Inven_LoadType.Load);
         GetOrAddComponent<T>(go);
     }
 
@@ -59,32 +54,61 @@ public class UIManager
     }
 
     [Obsolete]
-    public static void LoadInventoryUI(define.InventoryType type, GameObject parent)
+    public static void LoadInventoryUI(define.InventoryType type, GameObject parent, define.Inven_LoadType loadType)
     {
         Transform child = parent.transform.FindChild("Inven");
-        List<string> list;
+        List<string> list = null;
+        string path = null;
         switch (type)
         {
             case define.InventoryType.WeaponAndArmor:
                 list = define._weaponList;
+                path = "Weapon";
                 break;
             case define.InventoryType.Consumables:
                 list = define._consumablesList;
+                path = "Consumables";
                 break;
             case define.InventoryType.Quest:
                 list = define._questList;
+                path = "Quest Items";
                 break;
         }
 
         for (int i = 0; i < 30; i++)
         {
-            MakeSlot(child);
-        }
-    }
+            if (loadType == define.Inven_LoadType.Load)
+            {
+                GameObject go = Resource.Instantiate("UI/Inventory/UI_Inven_Item", child);
+                if (list.Count <= i)
+                    list.Add("empty");
+                string name = list[i];
+                if (name == "empty")
+                    go.transform.GetChild(0).GetComponent<Image>().sprite = Resources.Load<Sprite>($"Art/UI/{name}");
+                else
+                    go.transform.GetChild(0).GetComponent<Image>().sprite = Resources.Load<Sprite>($"Art/UI/Inventory/{path}/{name}");
 
-    public static void MakeSlot(Transform parent)
-    {
-        // TODO
+                go.name = name;
+                // 0 ~ 29
+                define._invenObjects.Add(i, go);
+            }
+            else if (loadType == define.Inven_LoadType.ReLoad)
+            {
+                GameObject go = define._invenObjects[i];
+                if (list.Count <= i)
+                    list.Add("empty");
+                string name = list[i];
+                if (name == "empty")
+                    go.transform.GetChild(0).GetComponent<Image>().sprite = Resources.Load<Sprite>($"Art/UI/{name}");
+                else
+                    go.transform.GetChild(0).GetComponent<Image>().sprite = Resources.Load<Sprite>($"Art/UI/Inventory/{path}/{name}");
+
+                go.name = name;
+                define._invenObjects.Remove(i);
+                define._invenObjects.Add(i, go);
+            }
+
+        }
     }
 
     public enum UIEvent

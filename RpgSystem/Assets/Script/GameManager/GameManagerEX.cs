@@ -38,11 +38,6 @@ public class GameManagerEX : MonoBehaviour
             Resource.Instantiate("Game/unitychan");
     }
 
-    private void Start()
-    {
-        SpawnMonster();
-    }
-
     private void Update()
     {
         _timer -= Time.deltaTime;
@@ -60,7 +55,7 @@ public class GameManagerEX : MonoBehaviour
             if (_maxMonster > _monsterCount || _Root.transform.childCount < _maxMonster)
             {
                 int x = _r.Next(42, 141);
-                float y = 0.006f;
+                float y = 0f;
                 int z = _r.Next(50, 156);
 
                 Vector3 vec = new Vector3(x, y, z);

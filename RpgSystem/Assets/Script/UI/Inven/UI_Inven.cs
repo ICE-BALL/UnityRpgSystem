@@ -14,31 +14,53 @@ public class UI_Inven : MonoBehaviour
     [SerializeField]
     GameObject _weapon;
     [SerializeField]
-    GameObject _posion;
+    GameObject _consumables;
+    [SerializeField]
+    GameObject _quest;
     [SerializeField]
     GameObject _close;
 
-    bool _isOpenBag = false;
-
+    [System.Obsolete]
     private void Start()
     {
-        _isOpenBag = true;
         _inven = UIManager.FindChild<Button>(gameObject, "Inven");
-        _weapon = UIManager.FindChild<Button>(gameObject, "Weapon");
-        _posion = UIManager.FindChild<Button>(gameObject, "Posion");
+        _weapon = UIManager.FindChild<Button>(gameObject, "Weapon/Armor");
+        _consumables = UIManager.FindChild<Button>(gameObject, "Consumables");
+        _quest = UIManager.FindChild<Button>(gameObject, "Quest items");
         _close = UIManager.FindChild<Button>(gameObject, "Close");
 
+        UIManager.BindEvent(_weapon, Weapon, UIManager.UIEvent.Click);
+        UIManager.BindEvent(_consumables, Consumables, UIManager.UIEvent.Click);
+        UIManager.BindEvent(_quest, Quest, UIManager.UIEvent.Click);
         UIManager.BindEvent(_close, CloseBag, UIManager.UIEvent.Click);
+    }
+
+    [System.Obsolete]
+    void Weapon(PointerEventData data)
+    {
+        UIManager.LoadInventoryUI(define.InventoryType.WeaponAndArmor, gameObject, define.Inven_LoadType.ReLoad);
+    }
+
+    [System.Obsolete]
+    void Consumables(PointerEventData data)
+    {
+        UIManager.LoadInventoryUI(define.InventoryType.Consumables, gameObject, define.Inven_LoadType.ReLoad);
+    }
+
+    [System.Obsolete]
+    void Quest(PointerEventData data)
+    {
+        UIManager.LoadInventoryUI(define.InventoryType.Quest, gameObject, define.Inven_LoadType.ReLoad);
     }
 
     void CloseBag(PointerEventData data)
     {
-        _isOpenBag = false;
+        define._invenObjects.Clear();
         UIManager.ShowSceneUI<UI_Scene>("UI_Scene");
-        UIManager.CloseUI(gameObject);
+        UIManager.CloseUI(gameObject, null);
     }
 
-    public void AddItem(string name)
+    public static void AddItem(string name)
     {
         if (UnityEngine.Resources.Load($"Art/UI/Inventory/Armor/{name}") != null)
             define._weaponList.Add(name);
@@ -49,7 +71,7 @@ public class UI_Inven : MonoBehaviour
 
     }
 
-    public void RemoveItem(string name)
+    public static void RemoveItem(string name)
     {
         if (UnityEngine.Resources.Load($"Art/UI/Inventory/Armor/{name}") != null)
             define._weaponList.Remove(name);

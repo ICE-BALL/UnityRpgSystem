@@ -13,6 +13,8 @@ public class define
     public static List<string> _consumablesList = new List<string>();
     public static List<string> _questList = new List<string>();
 
+    public static Dictionary<int, GameObject> _invenObjects = new Dictionary<int, GameObject>();
+
     public enum MonsterType
     {
         Skeleton,
@@ -23,5 +25,11 @@ public class define
         WeaponAndArmor,
         Consumables,
         Quest,
+    }
+
+    public enum Inven_LoadType
+    {
+        Load,
+        ReLoad,
     }
 }
