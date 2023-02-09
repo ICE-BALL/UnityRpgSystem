@@ -18,8 +18,11 @@ public class UI_Inven : MonoBehaviour
     [SerializeField]
     GameObject _close;
 
+    bool _isOpenBag = false;
+
     private void Start()
     {
+        _isOpenBag = true;
         _inven = UIManager.FindChild<Button>(gameObject, "Inven");
         _weapon = UIManager.FindChild<Button>(gameObject, "Weapon");
         _posion = UIManager.FindChild<Button>(gameObject, "Posion");
@@ -30,7 +33,29 @@ public class UI_Inven : MonoBehaviour
 
     void CloseBag(PointerEventData data)
     {
+        _isOpenBag = false;
         UIManager.ShowSceneUI<UI_Scene>("UI_Scene");
         UIManager.CloseUI(gameObject);
+    }
+
+    public void AddItem(string name)
+    {
+        if (UnityEngine.Resources.Load($"Art/UI/Inventory/Armor/{name}") != null)
+            define._weaponList.Add(name);
+        else if (UnityEngine.Resources.Load($"Art/UI/Inventory/Consumables/{name}") != null)
+            define._consumablesList.Add(name);
+        else if (UnityEngine.Resources.Load($"Art/UI/Inventory/Quest Items/{name}") != null)
+            define._questList.Add(name);
+
+    }
+
+    public void RemoveItem(string name)
+    {
+        if (UnityEngine.Resources.Load($"Art/UI/Inventory/Armor/{name}") != null)
+            define._weaponList.Remove(name);
+        else if (UnityEngine.Resources.Load($"Art/UI/Inventory/Consumables/{name}") != null)
+            define._consumablesList.Remove(name);
+        else if (UnityEngine.Resources.Load($"Art/UI/Inventory/Quest Items/{name}") != null)
+            define._questList.Remove(name);
     }
 }

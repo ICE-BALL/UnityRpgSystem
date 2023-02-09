@@ -18,7 +18,12 @@ public class Resource
             return null;
         }
 
-        return Object.Instantiate(gameObject, parent);
+        GameObject go = Object.Instantiate(gameObject, parent);
+        int index = go.name.IndexOf("(Clone)");
+        if (index > 0)
+            go.name = go.name.Substring(0, index);
+
+        return go;
     }
 
     public static void Destroy(GameObject go)

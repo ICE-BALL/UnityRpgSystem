@@ -15,16 +15,15 @@ public class GameManagerEX : MonoBehaviour
     int _maxMonster = 10;
     int _monsterCount = 0;
 
-    float _timer = 0.5f;
+    float _timer = 0f;
 
     System.Random _r = new System.Random();
 
     private void Awake()
     {
-        Cursor.visible = false;
+        //Cursor.visible = false;
         if (_Root == null)
             _Root = new GameObject() { name = "@Root" };
-        Cursor.visible = false;
         if (_UIRoot == null)
             _UIRoot = new GameObject() { name = "@UI_Root" };
         DontDestroyOnLoad(gameObject);
@@ -39,14 +38,19 @@ public class GameManagerEX : MonoBehaviour
             Resource.Instantiate("Game/unitychan");
     }
 
+    private void Start()
+    {
+        SpawnMonster();
+    }
+
     private void Update()
     {
         _timer -= Time.deltaTime;
         SpawnMonster();
-        if (Input.GetKey(KeyCode.LeftAlt))
-            Cursor.visible = true;
-        else
-            Cursor.visible = false;
+        //if (Input.GetKey(KeyCode.LeftAlt))
+        //    Cursor.visible = true;
+        //else
+        //    Cursor.visible = false;
     }
 
     void SpawnMonster()

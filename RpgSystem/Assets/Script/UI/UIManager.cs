@@ -10,21 +10,81 @@ public class UIManager
     public  static Action OpenBag;
     public Action CloseBag;
 
+    public static List<GameObject> _UiList = new List<GameObject>();
+
     public static void ShowSceneUI<T>(string name) where T : Component
     {
-        GameObject go = Resource.Instantiate($"UI/UI_Scene/{name}", GameObject.Find("@UI_Root").transform);
+        GameObject go = null;
+        foreach (GameObject item in _UiList)
+        {
+            if (item.name == name)
+                go = item;
+        }
+        if (go == null)
+            go = Resource.Instantiate($"UI/UI_Scene/{name}", GameObject.Find("@UI_Root").transform);
+        go.SetActive(true);
         GetOrAddComponent<T>(go);
     }
 
     public static void ShowInventoryUI<T>(string name) where T : Component
     {
+        //GameObject go = null;
+        //foreach (GameObject item in _UiList)
+        //{
+        //    if (item.name == name)
+        //        go = item;
+        //}
+        //if (go == null)
+        //    go = Resource.Instantiate($"UI/Inventory/{name}", GameObject.Find("@UI_Root").transform);
+        //go.SetActive(true);
+
         GameObject go = Resource.Instantiate($"UI/Inventory/{name}", GameObject.Find("@UI_Root").transform);
         GetOrAddComponent<T>(go);
     }
 
-    public static void CloseUI(GameObject go)
+    public static void CloseUI(GameObject go, string pool = "pool")
     {
-        Resource.Destroy(go);
+        if (pool == "pool")
+        {
+            go.SetActive(false);
+            foreach (GameObject item in _UiList)
+                if (item.transform.name == go.transform.name)
+                    return;
+
+            _UiList.Add(go);
+        }
+        else
+            Resource.Destroy(go);
+        
+    }
+
+    [Obsolete]
+    public static void LoadInventoryUI(define.InventoryType type, GameObject parent)
+    {
+        Transform child = parent.transform.FindChild("Inven");
+        List<string> list;
+        switch (type)
+        {
+            case define.InventoryType.WeaponAndArmor:
+                list = define._weaponList;
+                break;
+            case define.InventoryType.Consumables:
+                list = define._consumablesList;
+                break;
+            case define.InventoryType.Quest:
+                list = define._questList;
+                break;
+        }
+
+        for (int i = 0; i < 30; i++)
+        {
+            MakeSlot(child);
+        }
+    }
+
+    public static void MakeSlot(Transform parent)
+    {
+        // TODO
     }
 
     public enum UIEvent
