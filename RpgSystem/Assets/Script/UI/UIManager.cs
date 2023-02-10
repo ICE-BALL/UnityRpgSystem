@@ -50,11 +50,7 @@ public class UIManager
     public static void ShowInventoryUI<T>(string name) where T : Component
     {
         GameObject go = Resource.Instantiate($"UI/Inventory/{name}", GameObject.Find("@UI_Root").transform);
-<<<<<<< HEAD
         LoadInventoryUI(define.InventoryType.WeaponAndArmor, define.Inven_LoadType.Load, go);
-=======
-        LoadInventoryUI(define.InventoryType.WeaponAndArmor, define.Inven_LoadType.Load);
->>>>>>> f46f6deb278149df6a7ccc3a3f7f09d52e8747f6
         GetOrAddComponent<T>(go);
     }
 
@@ -75,16 +71,10 @@ public class UIManager
     }
 
     [Obsolete]
-<<<<<<< HEAD
     public static void LoadInventoryUI(define.InventoryType type, define.Inven_LoadType loadType, GameObject parent = null)
     {
         if (parent== null)
             parent = GameObject.Find("UI_Inven");
-=======
-    public static void LoadInventoryUI(define.InventoryType type, define.Inven_LoadType loadType)
-    {
-        GameObject parent = GameObject.Find("UI_Inven");
->>>>>>> f46f6deb278149df6a7ccc3a3f7f09d52e8747f6
         Transform child = parent.transform.FindChild("Inven");
         List<string> list = null;
         string path = null;
