@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using System;
 using Unity.VisualScripting;
+using System.Threading;
 
 public class EnemyController : BaseController
 {
@@ -50,6 +51,13 @@ public class EnemyController : BaseController
 
     private void Update()
     {
+        if (transform.position.y > 0.1f)
+            transform.position = new Vector3(transform.position.x, 0, transform.position.z);
+
+        if (transform.position.y > 0.1f)
+            throw new Exception("Monster Getting Up !");
+            
+
         if (!_targeting)
         {
             _timer += Time.deltaTime;
@@ -93,10 +101,12 @@ public class EnemyController : BaseController
         _attacking = false;
     }
 
+    [Obsolete]
     void OnDieEvent()
     {
         PlayerStat stat = _player.GetComponent<PlayerStat>();
         stat.Exp += SetMonsterExp();
+        MonsterDropItem.DropItem(define.MonsterType.Skeleton);
         
         Resource.Destroy(gameObject);
     }

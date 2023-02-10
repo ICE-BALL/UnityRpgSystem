@@ -29,11 +29,28 @@ public class UIManager
         GetOrAddComponent<T>(go);
     }
 
+    public static void ShowInformationUI<T>(string ItemName, string name = null) where T : Component
+    {
+        GameObject go = null;
+        if (string.IsNullOrEmpty(name))
+            name = typeof(T).Name;
+        foreach (GameObject item in _UiList)
+        {
+            if (item.name == name)
+                go = item;
+        }
+        if (go == null)
+            go = Resource.Instantiate($"UI/UI_Popup/{name}", GameObject.Find("@UI_Root").transform);
+        go.SetActive(true);
+        GetOrAddComponent<T>(go);
+        go.GetComponent<Item_Information>().Information(ItemName);
+    }
+
     [Obsolete]
     public static void ShowInventoryUI<T>(string name) where T : Component
     {
         GameObject go = Resource.Instantiate($"UI/Inventory/{name}", GameObject.Find("@UI_Root").transform);
-        LoadInventoryUI(define.InventoryType.WeaponAndArmor, go, define.Inven_LoadType.Load);
+        LoadInventoryUI(define.InventoryType.WeaponAndArmor, define.Inven_LoadType.Load, go);
         GetOrAddComponent<T>(go);
     }
 
@@ -54,8 +71,10 @@ public class UIManager
     }
 
     [Obsolete]
-    public static void LoadInventoryUI(define.InventoryType type, GameObject parent, define.Inven_LoadType loadType)
+    public static void LoadInventoryUI(define.InventoryType type, define.Inven_LoadType loadType, GameObject parent = null)
     {
+        if (parent== null)
+            parent = GameObject.Find("UI_Inven");
         Transform child = parent.transform.FindChild("Inven");
         List<string> list = null;
         string path = null;
