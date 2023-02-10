@@ -33,7 +33,7 @@ public class UIManager
     public static void ShowInventoryUI<T>(string name) where T : Component
     {
         GameObject go = Resource.Instantiate($"UI/Inventory/{name}", GameObject.Find("@UI_Root").transform);
-        LoadInventoryUI(define.InventoryType.WeaponAndArmor, go, define.Inven_LoadType.Load);
+        LoadInventoryUI(define.InventoryType.WeaponAndArmor, define.Inven_LoadType.Load);
         GetOrAddComponent<T>(go);
     }
 
@@ -54,8 +54,9 @@ public class UIManager
     }
 
     [Obsolete]
-    public static void LoadInventoryUI(define.InventoryType type, GameObject parent, define.Inven_LoadType loadType)
+    public static void LoadInventoryUI(define.InventoryType type, define.Inven_LoadType loadType)
     {
+        GameObject parent = GameObject.Find("UI_Inven");
         Transform child = parent.transform.FindChild("Inven");
         List<string> list = null;
         string path = null;

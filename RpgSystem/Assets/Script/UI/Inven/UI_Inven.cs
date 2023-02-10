@@ -20,9 +20,12 @@ public class UI_Inven : MonoBehaviour
     [SerializeField]
     GameObject _close;
 
+    static bool _isOpenBag = false;
+
     [System.Obsolete]
     private void Start()
     {
+        _isOpenBag = true;
         _inven = UIManager.FindChild<Button>(gameObject, "Inven");
         _weapon = UIManager.FindChild<Button>(gameObject, "Weapon/Armor");
         _consumables = UIManager.FindChild<Button>(gameObject, "Consumables");
@@ -38,36 +41,42 @@ public class UI_Inven : MonoBehaviour
     [System.Obsolete]
     void Weapon(PointerEventData data)
     {
-        UIManager.LoadInventoryUI(define.InventoryType.WeaponAndArmor, gameObject, define.Inven_LoadType.ReLoad);
+        UIManager.LoadInventoryUI(define.InventoryType.WeaponAndArmor, define.Inven_LoadType.ReLoad);
     }
 
     [System.Obsolete]
     void Consumables(PointerEventData data)
     {
-        UIManager.LoadInventoryUI(define.InventoryType.Consumables, gameObject, define.Inven_LoadType.ReLoad);
+        UIManager.LoadInventoryUI(define.InventoryType.Consumables, define.Inven_LoadType.ReLoad);
     }
 
     [System.Obsolete]
     void Quest(PointerEventData data)
     {
-        UIManager.LoadInventoryUI(define.InventoryType.Quest, gameObject, define.Inven_LoadType.ReLoad);
+        UIManager.LoadInventoryUI(define.InventoryType.Quest, define.Inven_LoadType.ReLoad);
     }
 
     void CloseBag(PointerEventData data)
     {
+        _isOpenBag = false;
         define._invenObjects.Clear();
         UIManager.ShowSceneUI<UI_Scene>("UI_Scene");
         UIManager.CloseUI(gameObject, null);
     }
 
-    public static void AddItem(string name)
+    [System.Obsolete]
+    public static void AddItem(string name, define.InventoryType type)
     {
-        if (UnityEngine.Resources.Load($"Art/UI/Inventory/Armor/{name}") != null)
+        Debug.Log(UnityEngine.Resources.Load($"Art/UI/Inventory/Weapon/{name}"));
+        if (UnityEngine.Resources.Load($"Art/UI/Inventory/Weapon/{name}") != null)
             define._weaponList.Add(name);
         else if (UnityEngine.Resources.Load($"Art/UI/Inventory/Consumables/{name}") != null)
             define._consumablesList.Add(name);
         else if (UnityEngine.Resources.Load($"Art/UI/Inventory/Quest Items/{name}") != null)
             define._questList.Add(name);
+
+        if (_isOpenBag == true)
+            UIManager.LoadInventoryUI(type, define.Inven_LoadType.ReLoad);
 
     }
 

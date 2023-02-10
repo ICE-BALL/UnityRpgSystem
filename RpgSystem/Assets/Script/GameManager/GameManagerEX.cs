@@ -55,10 +55,9 @@ public class GameManagerEX : MonoBehaviour
             if (_maxMonster > _monsterCount || _Root.transform.childCount < _maxMonster)
             {
                 int x = _r.Next(42, 141);
-                float y = 0f;
                 int z = _r.Next(50, 156);
 
-                Vector3 vec = new Vector3(x, y, z);
+                Vector3 vec = new Vector3(x, 0f, z);
 
                 GameObject monster = Resource.Instantiate("Game/SKELETON");
                 monster.transform.position = vec;

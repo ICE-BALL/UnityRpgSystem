@@ -24,13 +24,9 @@ public class UI_Inven_Item : MonoBehaviour
     {
         _itemName = gameObject.name;
         for (int i = 0; i < 30; i++)
-        {
             if (define._invenObjects[i] == gameObject)
-            {
                 _itemIndex = i;
-            }
 
-        }
         Debug.Log($"{_itemIndex}¹ø {_itemName} Å¬¸¯");
     }
 }
