@@ -25,3 +25,4 @@ Progress:
 - Inventory items
 - Inventory Creation
 - Add/Delete items
+- Item PickUp
