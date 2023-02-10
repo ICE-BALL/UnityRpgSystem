@@ -20,13 +20,19 @@ public class UI_Inven : MonoBehaviour
     [SerializeField]
     GameObject _close;
 
+<<<<<<< HEAD
     static GameObject _this;
+=======
+>>>>>>> f46f6deb278149df6a7ccc3a3f7f09d52e8747f6
     static bool _isOpenBag = false;
 
     [System.Obsolete]
     private void Start()
     {
+<<<<<<< HEAD
         _this = gameObject;
+=======
+>>>>>>> f46f6deb278149df6a7ccc3a3f7f09d52e8747f6
         _isOpenBag = true;
         _inven = UIManager.FindChild<Button>(gameObject, "Inven");
         _weapon = UIManager.FindChild<Button>(gameObject, "Weapon/Armor");
@@ -67,6 +73,7 @@ public class UI_Inven : MonoBehaviour
     }
 
     [System.Obsolete]
+<<<<<<< HEAD
     public static void AddItem(string name)
     {
         define.InventoryType type = define.InventoryType.WeaponAndArmor;
@@ -89,6 +96,20 @@ public class UI_Inven : MonoBehaviour
 
         if (_isOpenBag == true)
             UIManager.LoadInventoryUI(type, define.Inven_LoadType.ReLoad, _this);
+=======
+    public static void AddItem(string name, define.InventoryType type)
+    {
+        Debug.Log(UnityEngine.Resources.Load($"Art/UI/Inventory/Weapon/{name}"));
+        if (UnityEngine.Resources.Load($"Art/UI/Inventory/Weapon/{name}") != null)
+            define._weaponList.Add(name);
+        else if (UnityEngine.Resources.Load($"Art/UI/Inventory/Consumables/{name}") != null)
+            define._consumablesList.Add(name);
+        else if (UnityEngine.Resources.Load($"Art/UI/Inventory/Quest Items/{name}") != null)
+            define._questList.Add(name);
+>>>>>>> f46f6deb278149df6a7ccc3a3f7f09d52e8747f6
+
+        if (_isOpenBag == true)
+            UIManager.LoadInventoryUI(type, define.Inven_LoadType.ReLoad);
 
     }
 
