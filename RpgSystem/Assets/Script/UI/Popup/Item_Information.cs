@@ -19,7 +19,6 @@ public class Item_Information : MonoBehaviour
 
     string _itemName = "";
 
-    [Obsolete]
     private void Start()
     {
         _panel = transform.GetChild(1);
@@ -53,10 +52,9 @@ public class Item_Information : MonoBehaviour
 
     void UseItem(PointerEventData data)
     {
-
+        // TODO
     }
 
-    [Obsolete]
     void RemoveItem(PointerEventData data)
     {
         UI_Inven.RemoveItem(_itemName);

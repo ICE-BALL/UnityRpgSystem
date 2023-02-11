@@ -6,7 +6,6 @@ public class MonsterDropItem
 {
     static List<string> _dropAble = new List<string>() { "hp", "mp" };
 
-    [System.Obsolete]
     public static void DropItem(define.MonsterType type)
     {
         switch (type)

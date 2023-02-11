@@ -46,7 +46,6 @@ public class UIManager
         go.GetComponent<Item_Information>().Information(ItemName);
     }
 
-    [Obsolete]
     public static void ShowInventoryUI<T>(string name) where T : Component
     {
         GameObject go = Resource.Instantiate($"UI/Inventory/{name}", GameObject.Find("@UI_Root").transform);
@@ -70,12 +69,11 @@ public class UIManager
         
     }
 
-    [Obsolete]
     public static void LoadInventoryUI(define.InventoryType type, define.Inven_LoadType loadType, GameObject parent = null)
     {
         if (parent== null)
             parent = GameObject.Find("UI_Inven");
-        Transform child = parent.transform.FindChild("Inven");
+        Transform child = parent.transform.GetChild(0);
         List<string> list = null;
         string path = null;
         switch (type)

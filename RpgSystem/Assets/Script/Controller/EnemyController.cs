@@ -199,6 +199,7 @@ public class EnemyController : BaseController
         else
         {
             _targeting = false;
+            _nav.SetDestination(_nav.transform.position);
         }
     }
 

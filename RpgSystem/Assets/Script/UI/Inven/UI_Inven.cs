@@ -23,7 +23,6 @@ public class UI_Inven : MonoBehaviour
     static GameObject _this;
     static bool _isOpenBag = false;
 
-    [System.Obsolete]
     private void Start()
     {
         _this = gameObject;
@@ -40,19 +39,16 @@ public class UI_Inven : MonoBehaviour
         UIManager.BindEvent(_close, CloseBag, UIManager.UIEvent.Click);
     }
 
-    [System.Obsolete]
     void Weapon(PointerEventData data)
     {
         UIManager.LoadInventoryUI(define.InventoryType.WeaponAndArmor, define.Inven_LoadType.ReLoad);
     }
 
-    [System.Obsolete]
     void Consumables(PointerEventData data)
     {
         UIManager.LoadInventoryUI(define.InventoryType.Consumables, define.Inven_LoadType.ReLoad);
     }
 
-    [System.Obsolete]
     void Quest(PointerEventData data)
     {
         UIManager.LoadInventoryUI(define.InventoryType.Quest, define.Inven_LoadType.ReLoad);
@@ -66,7 +62,6 @@ public class UI_Inven : MonoBehaviour
         UIManager.CloseUI(gameObject, null);
     }
 
-    [System.Obsolete]
     public static void AddItem(string name)
     {
         define.InventoryType type = define.InventoryType.WeaponAndArmor;
@@ -92,7 +87,6 @@ public class UI_Inven : MonoBehaviour
 
     }
 
-    [System.Obsolete]
     public static void RemoveItem(string name)
     {
         define.InventoryType type = define.InventoryType.WeaponAndArmor;

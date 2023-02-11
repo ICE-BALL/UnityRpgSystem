@@ -73,6 +73,7 @@ public class PlayerController : BaseController
             if ((go.transform.position - transform.position).magnitude <= _attackRange + 1)
             {
                 transform.LookAt(go.transform.position);
+                transform.eulerAngles = new Vector3(0, transform.rotation.eulerAngles.y, 0);
             }
             _attacking = true;
             _state = State.Attack;

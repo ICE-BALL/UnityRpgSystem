@@ -4,6 +4,7 @@ using System.Drawing;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Playables;
+using UnityEngine.UIElements;
 
 public class CameraController : MonoBehaviour
 {
@@ -14,6 +15,8 @@ public class CameraController : MonoBehaviour
     [SerializeField]
     float _wheelSpeed = 5;
 
+    LayerMask _mask;
+
     public Vector3 _delta;
 
     public float _mouseX;
@@ -22,9 +25,14 @@ public class CameraController : MonoBehaviour
 
     float _xAngle;
     float _yAngle;
+    float _min = -50;
+
+    GameObject _cameraClamp;
 
     private void Start()
     {
+        _mask = LayerMask.GetMask("Ground");
+        _cameraClamp = new GameObject() { name = "@CameraClamp" };
         if (_player == null)
         {
             _player = GameObject.FindGameObjectWithTag("Player");
@@ -39,7 +47,7 @@ public class CameraController : MonoBehaviour
     {
         _mouseWheel = Input.GetAxis("Mouse ScrollWheel");
         MouseUpdate();
-        
+        Debug.Log(_min);
     }
 
     void MouseUpdate()
@@ -50,7 +58,9 @@ public class CameraController : MonoBehaviour
         _xAngle += _mouseX * _sensitivity;
         _yAngle += _mouseY * _sensitivity;
 
-        _yAngle = Mathf.Clamp(_yAngle, -50, 30);//-50, 30);
+        
+        _yAngle = Mathf.Clamp(_yAngle, _min, 30);
+
 
         transform.rotation = Quaternion.Euler(_yAngle, _xAngle, 0);
     }

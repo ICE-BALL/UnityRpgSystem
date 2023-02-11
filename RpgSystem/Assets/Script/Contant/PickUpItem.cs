@@ -16,7 +16,6 @@ public class PickUpItem : MonoBehaviour
         _player = GameObject.FindGameObjectWithTag("Player");
     }
 
-    [System.Obsolete]
     public void Update()
     {
         float distance = (_player.transform.position - transform.position).magnitude;
