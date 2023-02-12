@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.UIElements;
+using static UnityEditorInternal.ReorderableList;
 
 public class CameraController : MonoBehaviour
 {
@@ -12,8 +13,6 @@ public class CameraController : MonoBehaviour
     GameObject _player;
     [SerializeField]
     float _sensitivity = 1;
-    [SerializeField]
-    float _wheelSpeed = 5;
 
     LayerMask _mask;
 
@@ -21,18 +20,34 @@ public class CameraController : MonoBehaviour
 
     public float _mouseX;
     public float _mouseY;
-    public float _mouseWheel;
+
+    #region mouse wheel => not using
+    //public float _mouseWheel;
+    //[SerializeField]
+    //float _wheelSpeed = 5;
+    #endregion
 
     float _xAngle;
     float _yAngle;
-    float _min = -50;
 
-    GameObject _cameraClamp;
+    public Transform referenceTransform;
+    public float collisionOffset = 0.3f; //To prevent Camera from clipping through Objects
+    public float cameraSpeed = 15f; //How fast the Camera should snap into position if there are no obstacles
+
+    Vector3 defaultPos;
+    Vector3 directionNormalized;
+    Transform parentTransform;
+    float defaultDistance;
 
     private void Start()
     {
+        referenceTransform = gameObject.transform;
+        defaultPos = Camera.main.transform.localPosition;
+        directionNormalized = defaultPos.normalized;
+        parentTransform = gameObject.transform;
+        defaultDistance = Vector3.Distance(defaultPos, Vector3.zero);
+
         _mask = LayerMask.GetMask("Ground");
-        _cameraClamp = new GameObject() { name = "@CameraClamp" };
         if (_player == null)
         {
             _player = GameObject.FindGameObjectWithTag("Player");
@@ -45,9 +60,8 @@ public class CameraController : MonoBehaviour
 
     void Update()
     {
-        _mouseWheel = Input.GetAxis("Mouse ScrollWheel");
+        //_mouseWheel = Input.GetAxis("Mouse ScrollWheel");
         MouseUpdate();
-        Debug.Log(_min);
     }
 
     void MouseUpdate()
@@ -59,7 +73,7 @@ public class CameraController : MonoBehaviour
         _yAngle += _mouseY * _sensitivity;
 
         
-        _yAngle = Mathf.Clamp(_yAngle, _min, 30);
+        _yAngle = Mathf.Clamp(_yAngle, -70, 30);
 
 
         transform.rotation = Quaternion.Euler(_yAngle, _xAngle, 0);
@@ -67,33 +81,55 @@ public class CameraController : MonoBehaviour
 
     private void LateUpdate()
     {
-        Vector3 dir = (transform.position - Camera.main.transform.position).normalized;
-        if ((transform.position - Camera.main.transform.position).magnitude <= 2)
+        // ·ÎÄÃ ÁÂÇ¥
+        Vector3 currentPos = defaultPos;
+        RaycastHit hit;
+        Vector3 dirTmp = parentTransform.TransformPoint(defaultPos) - referenceTransform.position;
+        if (Physics.SphereCast(referenceTransform.position, collisionOffset, dirTmp, out hit, defaultDistance, _mask))
         {
-            if (_mouseWheel < 0)
-            {
-                Camera.main.transform.position += -dir * Time.deltaTime * _wheelSpeed;
-            }
-        }
-        else if ((transform.position - Camera.main.transform.position).magnitude >= 8)
-        {
-            if (_mouseWheel > 0)
-            {
-                Camera.main.transform.position += dir * Time.deltaTime * _wheelSpeed;
-            }
+            currentPos = (directionNormalized * (hit.distance - collisionOffset));
+
+            Camera.main.transform.localPosition = currentPos;
         }
         else
         {
-            if (_mouseWheel > 0)
-            {
-                Camera.main.transform.position += dir * Time.deltaTime * _wheelSpeed;
-            }
-            else if (_mouseWheel < 0)
-            {
-                Camera.main.transform.position += -dir * Time.deltaTime * _wheelSpeed;
-            }
+            Camera.main.transform.localPosition = Vector3.Lerp(Camera.main.transform.localPosition, currentPos, Time.deltaTime * cameraSpeed);
         }
+        //
 
+        #region mouse wheel => not using
+        //Vector3 dir = (transform.position - Camera.main.transform.position).normalized;
+        //Debug.DrawRay(transform.position, dir);
+        //if ((transform.position - Camera.main.transform.position).magnitude <= 2)
+        //{
+        //    if (_mouseWheel < 0)
+        //    {
+        //        Camera.main.transform.position += -dir * Time.deltaTime * _wheelSpeed;
+        //        defaultPos += -dir * Time.deltaTime * _wheelSpeed;
+        //    }
+        //}
+        //else if ((transform.position - Camera.main.transform.position).magnitude >= 8)
+        //{
+        //    if (_mouseWheel > 0)
+        //    {
+        //        Camera.main.transform.position += dir * Time.deltaTime * _wheelSpeed;
+        //        defaultPos += dir * Time.deltaTime * _wheelSpeed;
+        //    }
+        //}
+        //else
+        //{
+        //    if (_mouseWheel > 0)
+        //    {
+        //        Camera.main.transform.position += dir * Time.deltaTime * _wheelSpeed;
+        //        defaultPos += dir * Time.deltaTime * _wheelSpeed;
+        //    }
+        //    else if (_mouseWheel < 0)
+        //    {
+        //        Camera.main.transform.position += -dir * Time.deltaTime * _wheelSpeed;
+        //        defaultPos += -dir * Time.deltaTime * _wheelSpeed;
+        //    }
+        //}
+        #endregion
         transform.position = _player.transform.position + _delta;
 
     }

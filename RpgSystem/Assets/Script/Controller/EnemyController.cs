@@ -27,6 +27,8 @@ public class EnemyController : BaseController
     float _walkTime = 0;
     int _way = 0;
     float _walkTimer = 0;
+
+    bool _priced = false;
     
 
     void Start()
@@ -104,10 +106,6 @@ public class EnemyController : BaseController
     [Obsolete]
     void OnDieEvent()
     {
-        PlayerStat stat = _player.GetComponent<PlayerStat>();
-        stat.Exp += SetMonsterExp();
-        MonsterDropItem.DropItem(define.MonsterType.Skeleton);
-        
         Resource.Destroy(gameObject);
     }
 
@@ -130,6 +128,13 @@ public class EnemyController : BaseController
         if (_stat.Hp <= 0)
         {
             _state = State.Die;
+            if (_priced == false)
+            {
+                PlayerStat stat = _player.GetComponent<PlayerStat>();
+                stat.Exp += SetMonsterExp();
+                MonsterDropItem.DropItem(define.MonsterType.Skeleton);
+                _priced = true;
+            }
             define.MonsterList.Remove(gameObject);
             return;
         }
@@ -255,4 +260,12 @@ public class EnemyController : BaseController
         PlayerStat stat = _player.GetComponent<PlayerStat>();
         return _stat.Level + _stat.MaxHp / 10 + _stat.Attack;
     }
+
+    //IEnumerator Price()
+    //{
+    //    PlayerStat stat = _player.GetComponent<PlayerStat>();
+    //    stat.Exp += SetMonsterExp();
+    //    MonsterDropItem.DropItem(define.MonsterType.Skeleton);
+    //    yield return new WaitForSeconds(1f);
+    //}
 }
