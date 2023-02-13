@@ -40,7 +40,8 @@ Progress:
 - Inventory items
 - Inventory Creation
 - Add/Delete items
-- Item PickUp
+- Item PickUp -> keycode : F
+- open bag -> keycode : B
 
 ----------------------------------------
 - Inventory
