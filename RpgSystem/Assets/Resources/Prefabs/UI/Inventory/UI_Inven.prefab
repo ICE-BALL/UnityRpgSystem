@@ -862,7 +862,8 @@ MonoBehaviour:
   _scene: {fileID: 0}
   _inven: {fileID: 0}
   _weapon: {fileID: 0}
-  _posion: {fileID: 0}
+  _consumables: {fileID: 0}
+  _quest: {fileID: 0}
   _close: {fileID: 0}
 --- !u!1 &5642161754855756492
 GameObject:

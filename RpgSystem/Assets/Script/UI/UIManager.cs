@@ -29,6 +29,22 @@ public class UIManager
         GetOrAddComponent<T>(go);
     }
 
+    public static void ShowPopupUI<T>(string name = null) where T : Component
+    {
+        if (string.IsNullOrEmpty(name))
+            name  = typeof(T).Name;
+        GameObject go = null;
+        foreach (GameObject item in _UiList)
+        {
+            if (item.name == name)
+                go = item;
+        }
+        if (go == null)
+            go = Resource.Instantiate($"UI/UI_Popup/{name}", GameObject.Find("@UI_Root").transform);
+        go.SetActive(true);
+        GetOrAddComponent<T>(go);
+    }
+
     public static void ShowInformationUI<T>(string ItemName, string name = null) where T : Component
     {
         GameObject go = null;
@@ -94,9 +110,10 @@ public class UIManager
 
         for (int i = 0; i < 30; i++)
         {
+            GameObject go = null;
             if (loadType == define.Inven_LoadType.Load)
             {
-                GameObject go = Resource.Instantiate("UI/Inventory/UI_Inven_Item", child);
+                go = Resource.Instantiate("UI/Inventory/UI_Inven_Item", child);
                 if (list.Count <= i)
                     list.Add("empty");
                 string name = list[i];
@@ -111,7 +128,7 @@ public class UIManager
             }
             else if (loadType == define.Inven_LoadType.ReLoad)
             {
-                GameObject go = define._invenObjects[i];
+                go = define._invenObjects[i];
                 if (list.Count <= i)
                     list.Add("empty");
                 string name = list[i];
@@ -124,6 +141,7 @@ public class UIManager
                 define._invenObjects.Remove(i);
                 define._invenObjects.Add(i, go);
             }
+            go.GetComponent<UI_Inven_Item>()._init.Invoke();
 
         }
     }

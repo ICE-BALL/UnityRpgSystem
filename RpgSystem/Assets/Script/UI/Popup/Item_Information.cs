@@ -17,7 +17,7 @@ public class Item_Information : MonoBehaviour
     [SerializeField]
     GameObject _remove;
 
-    string _itemName = "";
+    public static string _itemName = "";
 
     private void Start()
     {
@@ -57,7 +57,10 @@ public class Item_Information : MonoBehaviour
 
     void RemoveItem(PointerEventData data)
     {
-        UI_Inven.RemoveItem(_itemName);
+        if (ItemData.ReturnItem(_itemName) == 1 || ItemData.ItemText(_itemName) == null)
+            UI_Inven.RemoveItem(_itemName);
+        else
+            UIManager.ShowPopupUI<UI_ItemRemove>();
         UIManager.CloseUI(gameObject);
         Debug.Log($"Removed {_itemName}");
     }

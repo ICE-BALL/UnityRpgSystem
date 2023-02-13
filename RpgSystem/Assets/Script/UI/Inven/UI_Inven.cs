@@ -33,29 +33,50 @@ public class UI_Inven : MonoBehaviour
         _quest = UIManager.FindChild<Button>(gameObject, "Quest items");
         _close = UIManager.FindChild<Button>(gameObject, "Close");
 
+        Init();
+
         UIManager.BindEvent(_weapon, Weapon, UIManager.UIEvent.Click);
         UIManager.BindEvent(_consumables, Consumables, UIManager.UIEvent.Click);
         UIManager.BindEvent(_quest, Quest, UIManager.UIEvent.Click);
         UIManager.BindEvent(_close, CloseBag, UIManager.UIEvent.Click);
     }
 
+    void Init()
+    {
+        _weapon.GetComponent<Image>().color = Color.yellow;
+        _consumables.GetComponent<Image>().color = Color.white;
+        _quest.GetComponent<Image>().color = Color.white;
+    }
+
     void Weapon(PointerEventData data)
     {
+        _weapon.GetComponent<Image>().color = Color.yellow;
+        _consumables.GetComponent<Image>().color = Color.white;
+        _quest.GetComponent<Image>().color = Color.white;
         UIManager.LoadInventoryUI(define.InventoryType.WeaponAndArmor, define.Inven_LoadType.ReLoad);
     }
 
     void Consumables(PointerEventData data)
     {
+        _weapon.GetComponent<Image>().color = Color.white;
+        _consumables.GetComponent<Image>().color = Color.yellow;
+        _quest.GetComponent<Image>().color = Color.white;
         UIManager.LoadInventoryUI(define.InventoryType.Consumables, define.Inven_LoadType.ReLoad);
     }
 
     void Quest(PointerEventData data)
     {
+        _weapon.GetComponent<Image>().color = Color.white;
+        _consumables.GetComponent<Image>().color = Color.white;
+        _quest.GetComponent<Image>().color = Color.yellow;
         UIManager.LoadInventoryUI(define.InventoryType.Quest, define.Inven_LoadType.ReLoad);
     }
 
     void CloseBag(PointerEventData data)
     {
+        _weapon.GetComponent<Image>().color = Color.white;
+        _consumables.GetComponent<Image>().color = Color.white;
+        _quest.GetComponent<Image>().color = Color.white;
         _isOpenBag = false;
         define._invenObjects.Clear();
         UIManager.ShowSceneUI<UI_Scene>("UI_Scene");
@@ -74,7 +95,9 @@ public class UI_Inven : MonoBehaviour
                 break;
             case "Consumables":
                 type = define.InventoryType.Consumables;
-                define._consumablesList.Insert(FindEmptyIndex(define._consumablesList), name);
+                if (ItemData.FirstItem(name))
+                    define._consumablesList.Insert(FindEmptyIndex(define._consumablesList), name);
+                ItemData.AddItem(name);
                 break;
             case "Quedt Items":
                 type = define.InventoryType.Quest;
@@ -82,9 +105,37 @@ public class UI_Inven : MonoBehaviour
                 break;
         }
 
+        Debug.Log($"Added {name}");
         if (_isOpenBag == true)
             UIManager.LoadInventoryUI(type, define.Inven_LoadType.ReLoad, _this);
 
+    }
+
+    public static void RemoveItem(string name, int num)
+    {
+        define.InventoryType type = define.InventoryType.WeaponAndArmor;
+        string path = FindInPath(name);
+        switch (path)
+        {
+            case "Weapon":
+                type = define.InventoryType.WeaponAndArmor;
+                define._weaponList.Remove(name);
+                break;
+            case "Consumables":
+                type = define.InventoryType.Consumables;
+                if (ItemData.ReturnItem(name) == 1 || ItemData.ReturnItem(name) == 0)
+                    define._consumablesList.Remove(name);
+                else
+                    ItemData.MinusItem(name, num);
+                break;
+            case "Quedt Items":
+                type = define.InventoryType.Quest;
+                define._questList.Remove(name);
+                break;
+        }
+
+        if (_isOpenBag == true)
+            UIManager.LoadInventoryUI(type, define.Inven_LoadType.ReLoad, _this);
     }
 
     public static void RemoveItem(string name)
