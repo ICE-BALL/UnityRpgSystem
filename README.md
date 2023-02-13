@@ -56,3 +56,13 @@ Progress:
 - Inventory Item Remove
 
 ![RPGSystem_Inventory_Remove](https://user-images.githubusercontent.com/92620792/218300244-9255394f-f480-49ec-8155-b0f6603d7a56.gif)
+
+- Displays currently selected inventory type
+
+![RPGSystem_inventorytype](https://user-images.githubusercontent.com/92620792/218427763-524d8011-958d-4ed2-839a-d055a892e202.gif)
+
+
+- Display the number of items
+
+
+![Rpg_Item](https://user-images.githubusercontent.com/92620792/218425874-5330583a-53a9-42ac-b48c-3145ddcf2046.png)
