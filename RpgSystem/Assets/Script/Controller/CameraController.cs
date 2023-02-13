@@ -13,6 +13,8 @@ public class CameraController : MonoBehaviour
     GameObject _player;
     [SerializeField]
     float _sensitivity = 1;
+    [SerializeField]
+    float _wheelSpeed = 5;
 
     LayerMask _mask;
 
@@ -20,19 +22,14 @@ public class CameraController : MonoBehaviour
 
     public float _mouseX;
     public float _mouseY;
-
-    #region mouse wheel => not using
     public float _mouseWheel;
-    [SerializeField]
-    float _wheelSpeed = 5;
-    #endregion
-
+    
     float _xAngle;
     float _yAngle;
 
     public Transform referenceTransform;
-    public float collisionOffset = 0.3f; //To prevent Camera from clipping through Objects
-    public float cameraSpeed = 15f; //How fast the Camera should snap into position if there are no obstacles
+    public float collisionOffset = 0.3f;
+    public float cameraSpeed = 15f;
 
     Vector3 defaultPos;
     Vector3 directionNormalized;
@@ -82,7 +79,7 @@ public class CameraController : MonoBehaviour
     private void LateUpdate()
     {
         // ·ÎÄÃ ÁÂÇ¥
-        defaultPos = Camera.main.transform.localPosition;
+        defaultDistance = Vector3.Distance(defaultPos, Vector3.zero);
         Vector3 currentPos = defaultPos;
         RaycastHit hit;
         Vector3 dirTmp = parentTransform.TransformPoint(defaultPos) - referenceTransform.position;
@@ -98,7 +95,7 @@ public class CameraController : MonoBehaviour
         }
         //
 
-        #region mouse wheel => not using
+        #region mouse wheel
         if (Physics.SphereCast(referenceTransform.position, collisionOffset, dirTmp, out hit, defaultDistance, _mask) == false)
         {
             Vector3 dir = (transform.position - Camera.main.transform.position).normalized;
@@ -108,6 +105,7 @@ public class CameraController : MonoBehaviour
                 if (_mouseWheel < 0)
                 {
                     Camera.main.transform.position += -dir * Time.deltaTime * _wheelSpeed;
+                    defaultPos = Camera.main.transform.localPosition;
                 }
             }
             else if ((transform.position - Camera.main.transform.position).magnitude >= 8)
@@ -115,6 +113,7 @@ public class CameraController : MonoBehaviour
                 if (_mouseWheel > 0)
                 {
                     Camera.main.transform.position += dir * Time.deltaTime * _wheelSpeed;
+                    defaultPos = Camera.main.transform.localPosition;
                 }
             }
             else
@@ -122,10 +121,12 @@ public class CameraController : MonoBehaviour
                 if (_mouseWheel > 0)
                 {
                     Camera.main.transform.position += dir * Time.deltaTime * _wheelSpeed;
+                    defaultPos = Camera.main.transform.localPosition;
                 }
                 else if (_mouseWheel < 0)
                 {
                     Camera.main.transform.position += -dir * Time.deltaTime * _wheelSpeed;
+                    defaultPos = Camera.main.transform.localPosition;
                 }
             }
         }

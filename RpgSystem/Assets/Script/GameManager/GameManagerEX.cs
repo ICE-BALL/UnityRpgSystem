@@ -21,7 +21,8 @@ public class GameManagerEX : MonoBehaviour
 
     private void Awake()
     {
-        //Cursor.visible = false;
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
         if (_Root == null)
             _Root = new GameObject() { name = "@Root" };
         if (_UIRoot == null)
@@ -42,10 +43,16 @@ public class GameManagerEX : MonoBehaviour
     {
         _timer -= Time.deltaTime;
         SpawnMonster();
-        //if (Input.GetKey(KeyCode.LeftAlt))
-        //    Cursor.visible = true;
-        //else
-        //    Cursor.visible = false;
+        if (Input.GetKey(KeyCode.LeftAlt) || UI_Inven._isOpenBag)
+        {
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+        }
+        else
+        {
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
+        }
     }
 
     void SpawnMonster()

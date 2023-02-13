@@ -67,7 +67,7 @@ public class PlayerController : BaseController
     #region Game
     void GameUpdate()
     {
-        if (Input.GetMouseButtonDown(0) && _attacking == false /*&& Cursor.visible == false*/)
+        if (Input.GetMouseButtonDown(0) && _attacking == false && Cursor.visible == false)
         {
             GameObject go = AutoTargeting();
             if ((go.transform.position - transform.position).magnitude <= _attackRange + 1)
@@ -80,7 +80,10 @@ public class PlayerController : BaseController
         }
         else
         {
-            PlayerMove();
+            if (_attacking == false)
+                PlayerMove();
+            else
+                _state = State.Idle;
         }
 
     }
@@ -104,7 +107,7 @@ public class PlayerController : BaseController
 
     void PlayerMove()
     {
-        if (Input.anyKey != false && _attacking == false)
+        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.A))
         {
             _dirs[0] = new Vector3(_camera.transform.forward.x, 0f, _camera.transform.forward.z).normalized;
             _dirs[1] = new Vector3(-_camera.transform.forward.x, 0f, -_camera.transform.forward.z).normalized;
@@ -135,6 +138,7 @@ public class PlayerController : BaseController
                 transform.position += _dirs[3] * _speed * Time.deltaTime;
                 _state = State.Run;
             }
+            
         }
         else
             _state = State.Idle;

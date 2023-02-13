@@ -21,7 +21,7 @@ public class UI_Inven : MonoBehaviour
     GameObject _close;
 
     static GameObject _this;
-    static bool _isOpenBag = false;
+    public static bool _isOpenBag = false;
 
     private void Start()
     {
